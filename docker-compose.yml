@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: controlid_api
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    # command: npm run start
+
+  db:
+    image: postgres:16
+    container_name: controlid_db
+    restart: always
+    environment:
+      POSTGRES_DB: controlid
+      POSTGRES_USER: controlid
+      POSTGRES_PASSWORD: controlid123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U controlid -d controlid"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+volumes:
+  pgdata:

@@ -1,0 +1,5 @@
+# Sync usuários ControlID – todo dia 01:00
+0 1 * * * node /app/dist/scripts/run-sync-controlid-users.js >> /var/log/cron.log 2>&1
+
+# Sync alunos iScholar – todo dia 02:00
+0 2 * * * node /app/dist/scripts/run-sync-ischolar-alunos.js >> /var/log/cron.log 2>&1

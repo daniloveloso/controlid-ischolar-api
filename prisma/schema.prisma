@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int           @id @default(autoincrement())
+  controlidUserId String        @unique
+  nome            String
+  tipo            UserType
+  matricula       String?
+  ativo           Boolean       @default(true)
+  ischolarAtivo   Boolean       @default(false)
+  ischolarSyncAt  DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  id_aluno        String?       @db.VarChar(50)
+  acessos         AccessLog[]
+  ischolarLogs    IscholarLog[]
+}
+
+model AccessLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  deviceId  String?
+  portalId  Int?
+  resultado String
+  motivo    String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model IscholarLog {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  status      String
+  mensagem    String
+  idMatricula String
+  tipo        String
+  dataHora    String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+enum UserType {
+  ALUNO
+  FUNCIONARIO
+}
